@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>メルカリ仕入判断AI 30分析</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Meiryo,sans-serif;font-size:13px;background:#f0f2f5;color:#333}
+
+/* ヘッダー */
+#header{background:linear-gradient(135deg,#1a237e 0%,#283593 50%,#1565c0 100%);color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+#header .logo{display:flex;align-items:center;gap:10px}
+#header .logo .icon{font-size:22px}
+#header .logo h1{font-size:18px;font-weight:700;letter-spacing:0.5px}
+#header .logo h1 span{color:#ffd740;font-size:22px}
+#header .logo .badge{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:4px;padding:2px 8px;font-size:11px;color:#b3e5fc}
+#header .kpis{display:flex;gap:20px}
+#header .kpi{text-align:center}
+#header .kpi .val{font-size:16px;font-weight:700;color:#ffd740}
+#header .kpi .lbl{font-size:10px;color:#90caf9;margin-top:2px}
+
+/* サブヘッダー */
+#subheader{background:#1e3a5f;color:#90caf9;padding:7px 16px;font-size:11px;display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+#subheader span{color:#fff}
+#subheader .sep{color:#546e7a}
+
+/* フィルターバー */
+#filterbar{background:#fff;padding:10px 16px;border-bottom:1px solid #e0e0e0;display:flex;flex-direction:column;gap:8px}
+#filterbar .row1{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+#filterbar .row1 label{color:#546e7a;font-size:12px;font-weight:600}
+#filterbar .row1 input[type=date]{border:1px solid #cfd8dc;border-radius:4px;padding:4px 8px;font-size:12px;color:#37474f}
+#filterbar .row1 select{border:1px solid #cfd8dc;border-radius:4px;padding:4px 8px;font-size:12px;color:#37474f;background:#fff;cursor:pointer}
+#filterbar .row2{display:flex;align-items:center;gap:8px}
+#filterbar .row2 label{color:#546e7a;font-size:12px;font-weight:600}
+#filterbar .row2 input[type=text]{border:1px solid #cfd8dc;border-radius:4px;padding:4px 10px;font-size:12px;width:160px;color:#37474f}
+#filterbar .btn-filter{background:#1565c0;color:#fff;border:none;border-radius:4px;padding:5px 16px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px}
+#filterbar .btn-filter:hover{background:#0d47a1}
+#filterbar .btn-reset{background:#fff;color:#546e7a;border:1px solid #cfd8dc;border-radius:4px;padding:5px 12px;font-size:12px;cursor:pointer}
+
+/* 件数バー */
+#countbar{background:#e3f2fd;border-bottom:1px solid #bbdefb;padding:7px 16px;font-size:12px;color:#1565c0;display:flex;align-items:center;gap:6px}
+#countbar .cnt{font-weight:700;color:#0d47a1}
+
+/* タブ */
+#tabs{background:#fff;border-bottom:2px solid #e0e0e0;display:flex;overflow-x:auto}
+.tab{flex:1;min-width:100px;padding:10px 8px;text-align:center;cursor:pointer;border-bottom:3px solid transparent;color:#78909c;transition:all .2s;white-space:nowrap}
+.tab:hover{background:#f5f5f5;color:#37474f}
+.tab.active{border-bottom-color:#1565c0;color:#1565c0;background:#e8f0fe}
+.tab .tab-icon{font-size:14px;display:block}
+.tab .tab-name{font-size:12px;font-weight:600}
+.tab .tab-sub{font-size:10px;color:#90a4ae}
+.tab.active .tab-sub{color:#5c85d6}
+
+/* コンテンツ */
+#content{padding:20px 16px;min-height:400px}
+.section-title{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.section-title .icon{font-size:18px}
+.section-title h2{font-size:16px;font-weight:700;color:#1a237e}
+.section-desc{color:#78909c;font-size:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #e0e0e0}
+
+/* カードグリッド */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.card{background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:14px 16px;cursor:pointer;transition:all .2s;position:relative}
+.card:hover{border-color:#1565c0;box-shadow:0 2px 8px rgba(21,101,192,0.15);transform:translateY(-1px)}
+.card .num{display:inline-block;background:#1565c0;color:#fff;font-size:10px;font-weight:700;border-radius:3px;padding:1px 6px;margin-bottom:6px}
+.card h3{font-size:13px;font-weight:700;color:#1a237e;margin-bottom:4px}
+.card p{font-size:11px;color:#78909c}
+
+/* データテーブル表示エリア */
+#data-view{margin-top:20px;display:none}
+#data-view.show{display:block}
+.data-table-wrap{background:#fff;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden}
+.data-table-wrap h3{background:#1a237e;color:#fff;padding:10px 16px;font-size:13px}
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{background:#e8eaf6;color:#283593;padding:8px 12px;text-align:left;border-bottom:2px solid #c5cae9;position:sticky;top:0}
+.data-table td{padding:7px 12px;border-bottom:1px solid #f0f0f0;color:#37474f}
+.data-table tr:hover td{background:#f3f4ff}
+.data-table tr:nth-child(even) td{background:#fafbff}
+.badge-rank{display:inline-block;background:#1565c0;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700;min-width:28px;text-align:center}
+.badge-rank.gold{background:#f9a825}
+.badge-rank.silver{background:#78909c}
+.badge-rank.bronze{background:#a1887f}
+
+/* ローディング */
+#loading{text-align:center;padding:40px;color:#78909c;display:none}
+#loading.show{display:block}
+
+/* データなし */
+#nodata{text-align:center;padding:40px;color:#90a4ae;display:none}
+#nodata.show{display:block}
+
+/* フッター */
+#footer{background:#1a237e;color:#7986cb;text-align:center;padding:12px;font-size:11px;margin-top:20px}
+#footer span{color:#fff}
+
+/* レスポンシブ */
+@media(max-width:768px){
+  #header .kpis{display:none}
+  .cards{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<div id="header">
+  <div class="logo">
+    <div class="icon">🛍️</div>
+    <h1>メルカリ仕入判断AI <span>30</span>分析</h1>
+    <div class="badge" id="ver-badge">読込中...</div>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><div class="val" id="kpi-total">--</div><div class="lbl">分析対象件数</div></div>
+    <div class="kpi"><div class="val" id="kpi-avg-price">--</div><div class="lbl">平均単価</div></div>
+    <div class="kpi"><div class="val" id="kpi-avg-profit">--</div><div class="lbl">推定利益/件</div></div>
+    <div class="kpi"><div class="val" id="kpi-profit-rate">--</div><div class="lbl">平均利益率</div></div>
+    <div class="kpi"><div class="val" id="kpi-sell-rate">--</div><div class="lbl">即売れ率</div></div>
+    <div class="kpi"><div class="val" id="kpi-analyses">30</div><div class="lbl">分析数</div></div>
+  </div>
+</div>
+
+<!-- サブヘッダー -->
+<div id="subheader">
+  <span>DB収録期間：</span><span id="sh-period">--</span>
+  <span class="sep">|</span>
+  <span>総件数：</span><span id="sh-total" style="color:#ffd740">--</span>
+  <span class="sep">|</span>
+  <span>推定総利益：</span><span id="sh-profit" style="color:#81c784">--</span>
+  <span class="sep">|</span>
+  <span>3日以内即売れ：</span><span id="sh-quick" style="color:#ffb74d">--</span>
+  <span class="sep">|</span>
+  <span>カテゴリ：</span><span id="sh-cat" style="color:#80deea">--</span>
+</div>
+
+<!-- フィルターバー -->
+<div id="filterbar">
+  <div class="row1">
+    <label>期間：</label>
+    <input type="date" id="f-from" value="2014-05-18">
+    <span>〜</span>
+    <input type="date" id="f-to">
+    <label>L1：</label>
+    <select id="f-l1"><option>全L1</option></select>
+    <label>L2：</label>
+    <select id="f-l2"><option>全L2</option></select>
+    <label>L3：</label>
+    <select id="f-l3"><option>全L3</option></select>
+    <label>L4：</label>
+    <select id="f-l4"><option>全L4</option></select>
+    <label>L5：</label>
+    <select id="f-l5"><option>全L5</option></select>
+    <label>L6：</label>
+    <select id="f-l6"><option>全L6</option></select>
+  </div>
+  <div class="row2">
+    <label>ブランド：</label>
+    <input type="text" id="f-brand" placeholder="ブランド名を入力...">
+    <button class="btn-filter" onclick="applyFilter()">🔍 絞込</button>
+    <button class="btn-reset" onclick="resetFilter()">× リセット</button>
+  </div>
+</div>
+
+<!-- 件数バー -->
+<div id="countbar">
+  📅 <span id="cb-period">--</span> 🔍 <span id="cb-cat">--</span> — <span class="cnt" id="cb-count">--</span> 件
+</div>
+
+<!-- タブ -->
+<div id="tabs">
+  <div class="tab active" onclick="switchTab(0)" data-tab="0">
+    <span class="tab-icon">🏷️</span>
+    <span class="tab-name">ブランド</span>
+    <span class="tab-sub">分析</span>
+  </div>
+  <div class="tab" onclick="switchTab(1)" data-tab="1">
+    <span class="tab-icon">📁</span>
+    <span class="tab-name">カテゴリ</span>
+    <span class="tab-sub">分析</span>
+  </div>
+  <div class="tab" onclick="switchTab(2)" data-tab="2">
+    <span class="tab-icon">🛒</span>
+    <span class="tab-name">商品</span>
+    <span class="tab-sub">分析</span>
+  </div>
+  <div class="tab" onclick="switchTab(3)" data-tab="3">
+    <span class="tab-icon">💰</span>
+    <span class="tab-name">価格帯</span>
+    <span class="tab-sub">分析</span>
+  </div>
+  <div class="tab" onclick="switchTab(4)" data-tab="4">
+    <span class="tab-icon">🔑</span>
+    <span class="tab-name">キーワード</span>
+    <span class="tab-sub">分析</span>
+  </div>
+  <div class="tab" onclick="switchTab(5)" data-tab="5">
+    <span class="tab-icon">📈</span>
+    <span class="tab-name">トレンド</span>
+    <span class="tab-sub">分析</span>
+  </div>
+  <div class="tab" onclick="switchTab(6)" data-tab="6">
+    <span class="tab-icon">🏆</span>
+    <span class="tab-name">仕入れ</span>
+    <span class="tab-sub">推奨</span>
+  </div>
+</div>
+
+<!-- コンテンツ -->
+<div id="content">
+  <div id="loading" class="show">⏳ データ読み込み中...</div>
+  <div id="nodata">📭 データがありません</div>
+  <div id="tab-content"></div>
+  <div id="data-view"></div>
+</div>
+
+<div id="footer">
+  メルカリ仕入判断AI 30分析 | データ更新: <span id="updated-at">--</span> | Powered by GitHub Actions
+</div>
+
+<script>
+// =====================
+// データ読み込み
+// =====================
+let G = { meta:{}, data:{}, filter:{} };
+
+const DATA_FILES = [
+  'data/summary.json',
+  'data/brand.json',
+  'data/category.json',
+  'data/product.json',
+  'data/price.json',
+  'data/keyword.json',
+  'data/trend.json',
+  'data/recommend.json'
+];
+
+async function loadData() {
+  try {
+    const res = await fetch('data/summary.json');
+    if (!res.ok) throw new Error('summary.json not found');
+    G.meta = await res.json();
+    renderMeta();
+
+    // 各データファイルを並列読み込み
+    const files = ['brand','category','product','price','keyword','trend','recommend'];
+    await Promise.all(files.map(async f => {
+      try {
+        const r = await fetch(`data/${f}.json`);
+        if(r.ok) G.data[f] = await r.json();
+      } catch(e) { G.data[f] = null; }
+    }));
+
+    document.getElementById('loading').classList.remove('show');
+    switchTab(0);
+  } catch(e) {
+    document.getElementById('loading').innerHTML = '⚠️ データファイルが見つかりません。<br>scripts/build.py を実行してデータを生成してください。';
+  }
+}
+
+function renderMeta() {
+  const m = G.meta;
+  document.getElementById('kpi-total').textContent = fmt(m.total_items);
+  document.getElementById('kpi-avg-price').textContent = '¥' + fmt(m.avg_price);
+  document.getElementById('kpi-avg-profit').textContent = '¥' + fmt(m.avg_profit);
+  document.getElementById('kpi-profit-rate').textContent = (m.profit_rate||0).toFixed(1) + '%';
+  document.getElementById('kpi-sell-rate').textContent = (m.quick_sell_rate||0).toFixed(1) + '%';
+  document.getElementById('sh-period').textContent = m.period || '--';
+  document.getElementById('sh-total').textContent = fmt(m.total_items) + '件';
+  document.getElementById('sh-profit').textContent = '¥' + fmt(m.total_profit);
+  document.getElementById('sh-quick').textContent = fmt(m.quick_sell_count) + '件';
+  document.getElementById('sh-cat').textContent = m.categories || '--';
+  document.getElementById('ver-badge').textContent = m.version || 'Vol1';
+  document.getElementById('updated-at').textContent = m.updated_at || '--';
+  document.getElementById('cb-period').textContent = m.period || '--';
+  document.getElementById('cb-cat').textContent = m.categories || '--';
+  document.getElementById('cb-count').textContent = fmt(m.filtered_items || m.total_items);
+
+  // フィルター日付セット
+  if(m.db_end) document.getElementById('f-to').value = m.db_end;
+
+  // L1セレクト
+  if(m.l1_list) {
+    const sel = document.getElementById('f-l1');
+    m.l1_list.forEach(v => {
+      const o = document.createElement('option');
+      o.value = v; o.textContent = v;
+      sel.appendChild(o);
+    });
+  }
+}
+
+function fmt(n) {
+  if(n == null) return '--';
+  return Number(n).toLocaleString('ja-JP');
+}
+
+// =====================
+// タブ定義
+// =====================
+const TABS = [
+  {
+    key:'brand', icon:'🏷️', name:'ブランド分析',
+    desc:'ブランド別の売上・回転率・利益率を分析します',
+    cards:[
+      {num:'#1', name:'ブランド売上ランキング', desc:'需要スコア降順', key:'brand_ranking'},
+      {num:'#2', name:'ブランド回転率', desc:'売却時間昇順', key:'brand_turnover'},
+      {num:'#3', name:'ブランド平均売却価格', desc:'平均単価降順', key:'brand_avg_price'},
+      {num:'#4', name:'ブランド平均売却時間', desc:'売却時間昇順', key:'brand_avg_time'},
+      {num:'#5', name:'ブランド利益率', desc:'推定利益/件降順', key:'brand_profit'},
+    ]
+  },
+  {
+    key:'category', icon:'📁', name:'カテゴリ分析',
+    desc:'カテゴリ別の売上・回転率・利益率を分析します',
+    cards:[
+      {num:'#6', name:'カテゴリ売上ランキング', desc:'需要スコア降順', key:'cat_ranking'},
+      {num:'#7', name:'カテゴリ回転率', desc:'売却時間昇順', key:'cat_turnover'},
+      {num:'#8', name:'カテゴリ平均価格', desc:'平均単価降順', key:'cat_avg_price'},
+      {num:'#9', name:'カテゴリ平均売却時間', desc:'売却時間昇順', key:'cat_avg_time'},
+      {num:'#10', name:'カテゴリ利益率', desc:'推定利益降順', key:'cat_profit'},
+    ]
+  },
+  {
+    key:'product', icon:'🛒', name:'商品分析',
+    desc:'商品別の売上・回転率・利益率を分析します',
+    cards:[
+      {num:'#11', name:'売れる商品ランキング', desc:'需要スコア降順', key:'prod_ranking'},
+      {num:'#12', name:'商品回転率', desc:'売却時間昇順', key:'prod_turnover'},
+      {num:'#13', name:'商品平均売却価格', desc:'平均単価降順', key:'prod_avg_price'},
+      {num:'#14', name:'商品平均売却時間', desc:'売却時間昇順', key:'prod_avg_time'},
+      {num:'#15', name:'商品利益率', desc:'推定利益降順', key:'prod_profit'},
+    ]
+  },
+  {
+    key:'price', icon:'💰', name:'価格帯分析',
+    desc:'価格帯別の売れ行き・利益率を分析します',
+    cards:[
+      {num:'#16', name:'売れる価格帯ランキング', desc:'件数降順', key:'price_ranking'},
+      {num:'#17', name:'価格帯別回転率', desc:'売却時間昇順', key:'price_turnover'},
+      {num:'#18', name:'価格帯別利益率', desc:'利益率降順', key:'price_profit'},
+      {num:'#19', name:'平均値下げ幅', desc:'価格帯別分析', key:'price_discount'},
+      {num:'#20', name:'値下げ回数と売却率', desc:'価格帯別分析', key:'price_discount_cnt'},
+    ]
+  },
+  {
+    key:'keyword', icon:'🔑', name:'キーワード分析',
+    desc:'タイトルキーワードの出現頻度を分析します',
+    cards:[
+      {num:'#21', name:'タイトルKWランキング', desc:'出現頻度降順', key:'kw_ranking'},
+      {num:'#22', name:'検索ヒットKW', desc:'キーワード分析', key:'kw_search'},
+      {num:'#23', name:'ブランド+商品名成約率', desc:'ブランド×カテゴリ', key:'kw_brand_cat'},
+      {num:'#24', name:'型番あり vs なし', desc:'型番効果分析', key:'kw_model_no'},
+      {num:'#25', name:'送料無料表記効果', desc:'送料別分析', key:'kw_shipping'},
+    ]
+  },
+  {
+    key:'trend', icon:'📈', name:'トレンド分析',
+    desc:'急上昇ブランド・カテゴリ・月別売上を分析します',
+    cards:[
+      {num:'#26', name:'急上昇ブランド', desc:'需要スコア上位', key:'trend_brand'},
+      {num:'#27', name:'急上昇カテゴリ', desc:'カテゴリ需要スコア上位', key:'trend_cat'},
+      {num:'#28', name:'価格上昇商品', desc:'平均単価上位', key:'trend_price'},
+      {num:'#29', name:'売上急増商品', desc:'仕入れスコア上位', key:'trend_sales'},
+      {num:'#30', name:'月別売上ランキング', desc:'月別集計', key:'trend_monthly'},
+    ]
+  },
+  {
+    key:'recommend', icon:'🏆', name:'仕入れ推奨',
+    desc:'仕入れスコアで総合評価した推奨ランキングです',
+    cards:[
+      {num:'P', name:'仕入れ推奨ランキング', desc:'仕入れスコアで絞込後データから総合評価', key:'recommend'},
+    ]
+  },
+];
+
+// =====================
+// タブ切り替え
+// =====================
+let currentTab = 0;
+
+function switchTab(idx) {
+  currentTab = idx;
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  document.getElementById('data-view').classList.remove('show');
+  document.getElementById('data-view').innerHTML = '';
+  renderTabContent(idx);
+}
+
+function renderTabContent(idx) {
+  const tab = TABS[idx];
+  const tc = document.getElementById('tab-content');
+  tc.innerHTML = `
+    <div class="section-title">
+      <span class="icon">${tab.icon}</span>
+      <h2>${tab.name}</h2>
+    </div>
+    <p class="section-desc">${tab.desc}</p>
+    <div class="cards">
+      ${tab.cards.map(c => `
+        <div class="card" onclick="showData('${c.key}','${c.name}')">
+          <span class="num">${c.num}</span>
+          <h3>${c.name}</h3>
+          <p>${c.desc}</p>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+// =====================
+// データ表示
+// =====================
+function showData(key, title) {
+  const dv = document.getElementById('data-view');
+  dv.classList.add('show');
+  dv.innerHTML = '';
+
+  const tabKey = TABS[currentTab].key;
+  const raw = G.data[tabKey];
+
+  if(!raw || !raw[key]) {
+    dv.innerHTML = `<div class="data-table-wrap"><h3>📊 ${title}</h3><p style="padding:20px;color:#90a4ae">データが未生成です。scripts/build.py を実行してください。</p></div>`;
+    dv.scrollIntoView({behavior:'smooth'});
+    return;
+  }
+
+  const rows = raw[key];
+  if(!rows || rows.length === 0) {
+    dv.innerHTML = `<div class="data-table-wrap"><h3>📊 ${title}</h3><p style="padding:20px;color:#90a4ae">データがありません</p></div>`;
+    return;
+  }
+
+  const cols = Object.keys(rows[0]);
+  dv.innerHTML = `
+    <div class="data-table-wrap">
+      <h3>📊 ${title}（${rows.length}件）</h3>
+      <div style="overflow-x:auto;max-height:500px;overflow-y:auto">
+        <table class="data-table">
+          <thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+          <tbody>
+            ${rows.map((r,i)=>`
+              <tr>
+                ${cols.map((c,ci)=>`
+                  <td>${ci===0 ? `<span class="badge-rank ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">${i+1}</span> ${r[c]??''}` : fmtCell(r[c])}</td>
+                `).join('')}
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  dv.scrollIntoView({behavior:'smooth'});
+}
+
+function fmtCell(v) {
+  if(v == null) return '--';
+  if(typeof v === 'number') {
+    if(v > 1000) return '¥' + v.toLocaleString('ja-JP');
+    if(v < 1 && v > 0) return (v*100).toFixed(1) + '%';
+    return v.toLocaleString('ja-JP');
+  }
+  return v;
+}
+
+// =====================
+// フィルター
+// =====================
+function applyFilter() {
+  const from = document.getElementById('f-from').value;
+  const to = document.getElementById('f-to').value;
+  const l1 = document.getElementById('f-l1').value;
+  const brand = document.getElementById('f-brand').value;
+  document.getElementById('cb-period').textContent = `${from} 〜 ${to}`;
+  document.getElementById('cb-cat').textContent = l1 !== '全L1' ? l1 : 'ファッション';
+  // ※実際のフィルタリングはbuild.pyで実装
+}
+
+function resetFilter() {
+  document.getElementById('f-from').value = '2014-05-18';
+  document.getElementById('f-l1').value = '全L1';
+  document.getElementById('f-l2').value = '全L2';
+  document.getElementById('f-brand').value = '';
+  if(G.meta.db_end) document.getElementById('f-to').value = G.meta.db_end;
+}
+
+// =====================
+// 起動
+// =====================
+loadData();
+</script>
+</body>
+</html>

@@ -10,9 +10,9 @@ DB更新 -> HTML生成 -> GitHub自動プッシュ を完全1本化
   python auto_push.py --now    # 即時実行（スケジュール無視）
 
 Windowsタスクスケジューラ:
-  register_task.bat をダブルクリックで毎日5:00に自動実行
+  bat\register_task.bat をダブルクリックで毎日5:00に自動実行
 
-配置フォルダ: H:/mercari_github/
+配置フォルダ: D:/mercari_github/scripts/
 """
 import subprocess, sys, os, logging, argparse
 from pathlib import Path
@@ -21,10 +21,10 @@ from datetime import datetime
 # ============================================================
 # パス設定（このファイルと同じフォルダを基準に解決）
 # ============================================================
-ROOT      = Path(__file__).parent                          # H:\mercari_github
-DB_PATH   = Path(r"H:\mercari\data\mercari_full.db")           # DBパス
-HTML_OUT  = ROOT / "index.html"                            # 出力HTML（上書き）
-BUILD_PY  = ROOT / "build_mercari.py"                      # HTML生成スクリプト
+ROOT      = Path(__file__).parent.parent                   # D:\mercari_github
+DB_PATH   = Path(r"D:\mercari\data\mercari_full.db")           # DBパス
+HTML_OUT  = ROOT / "html" / "index.html"                   # 出力HTML（上書き）
+BUILD_PY  = ROOT / "scripts" / "build_mercari.py"          # HTML生成スクリプト
 LOG_FILE  = ROOT / "logs" / "auto_push.log"
 LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
 
@@ -74,7 +74,7 @@ def step_build():
     # build_mercari.py 存在確認
     if not BUILD_PY.exists():
         log.error(f"build_mercari.py が見つかりません: {BUILD_PY}")
-        log.error(f"build_mercari.py を {ROOT} に配置してください")
+        log.error(f"build_mercari.py を {ROOT / 'scripts'} に配置してください")
         return False
 
     log.info(f"DB   : {db}")

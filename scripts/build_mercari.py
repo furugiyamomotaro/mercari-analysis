@@ -7,13 +7,13 @@ build_mercari.py
 
 使い方:
   python build_mercari.py
-  python build_mercari.py --db D:/mercari_data/data/mercari_full.db
-  python build_mercari.py --db D:/path/to/db.db --out H:/mercari_github/mercari_Vol3.html
+  python build_mercari.py --db D:/mercari/data/mercari_full.db
+  python build_mercari.py --db D:/path/to/db.db --out D:/mercari_github/html/mercari_Vol3.html
 
 環境変数でも指定可:
-  DB_PATH=D:/mercari_data/data/mercari_full.db
+  DB_PATH=D:/mercari/data/mercari_full.db
 
-出力先省略時は --out-dir (デフォルト: スクリプトと同じフォルダ) に
+出力先省略時は --out-dir (デフォルト: D:\mercari_github\html\) に
 mercari_VoLN.html を連番で出力する。
 """
 import sqlite3, json, sys, os, re, argparse
@@ -24,7 +24,7 @@ from collections import defaultdict
 # ============================================================
 # 設定
 # ============================================================
-DEFAULT_DB = Path(r"H:\mercari\data\mercari_full.db")
+DEFAULT_DB = Path(r"D:\mercari\data\mercari_full.db")
 
 # 送料マップ（変更禁止）
 SHIPPING = {
@@ -63,7 +63,7 @@ if not db_path.exists():
 if args.out:
     out_path = Path(args.out)
 else:
-    out_dir = Path(args.out_dir) if args.out_dir else Path(__file__).parent
+    out_dir = Path(args.out_dir) if args.out_dir else Path(__file__).parent.parent / "html"
     out_dir.mkdir(parents=True, exist_ok=True)
     # 連番カウンタ
     counter_file = out_dir / "mercari_counter.txt"
@@ -75,7 +75,7 @@ else:
     out_path = out_dir / f"mercari_Vol{vol}.html"
 
 # テンプレートパス
-tmpl_path = Path(args.template) if args.template else Path(__file__).parent / "index_v20.html"
+tmpl_path = Path(args.template) if args.template else Path(__file__).parent.parent / "html" / "index_v20.html"
 
 print(f"[BUILD] DB     : {db_path}")
 print(f"[BUILD] 出力   : {out_path}")

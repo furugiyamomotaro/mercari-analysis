@@ -21,6 +21,12 @@ from pathlib import Path
 from datetime import datetime
 from collections import defaultdict
 
+# Windowsコマンドプロンプトでの日本語文字化けを防ぐ
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf-8', buffering=1)
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr = open(sys.stderr.fileno(), mode='w', encoding='utf-8', buffering=1)
+
 # ============================================================
 # 設定
 # ============================================================

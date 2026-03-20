@@ -1,0 +1,31 @@
+2026-03-20 08:57:51,563 INFO =======================================================
+2026-03-20 08:57:51,564 INFO   メルカリ仕入判断AI 自動更新開始
+2026-03-20 08:57:51,564 INFO   2026-03-20 08:57:51
+2026-03-20 08:57:51,564 INFO =======================================================
+2026-03-20 08:57:51,564 INFO ─── Step 1: HTML生成 ───────────────────────────
+2026-03-20 08:57:51,564 ERROR DBファイルが見つかりません: D:\mercari_data\data\mercari_full.db
+2026-03-20 08:57:51,565 ERROR DB_PATH 環境変数またはスクリプト内の DB_PATH を確認してください
+2026-03-20 08:57:51,565 ERROR ❌ Step 1 失敗。処理を中止します
+2026-03-20 09:24:29,239 INFO =======================================================
+2026-03-20 09:24:29,239 INFO   メルカリ仕入判断AI 自動更新開始
+2026-03-20 09:24:29,239 INFO   2026-03-20 09:24:29
+2026-03-20 09:24:29,240 INFO =======================================================
+2026-03-20 09:24:29,240 INFO ─── Step 1: HTML生成 ───────────────────────────
+2026-03-20 09:24:29,240 INFO DB   : H:\mercari\data\mercari_full.db
+2026-03-20 09:24:29,240 INFO 出力 : H:\mercari_github\index.html
+2026-03-20 09:24:29,365 WARNING   CMD: "C:\Users\ginto\AppData\Local\Programs\Python\Python313\python.exe" "H:\mercari_github\build_mercari.py" --db "H:\mercari\data\mercari_full.db" --out "H:\mercari_github\index.html"
+2026-03-20 09:24:29,365 WARNING   ERR: [WARN] SQL: no such column: created_at | SELECT MIN(created_at) as mn, MAX(updated_at) as mx FROM sold_items
+Traceback (most recent call last):
+  File "H:\mercari_github\build_mercari.py", line 166, in <module>
+    DB_START = str(period_r[0]['mn'] or '')[:10]
+                   ~~~~~~~~^^^
+IndexErro
+2026-03-20 09:24:29,366 ERROR HTML生成失敗（終了コード 1）
+2026-03-20 09:24:29,366 ERROR [WARN] SQL: no such column: created_at | SELECT MIN(created_at) as mn, MAX(updated_at) as mx FROM sold_items
+Traceback (most recent call last):
+  File "H:\mercari_github\build_mercari.py", line 166, in <module>
+    DB_START = str(period_r[0]['mn'] or '')[:10]
+                   ~~~~~~~~^^^
+IndexError: list index out of range
+
+2026-03-20 09:24:29,367 ERROR ❌ Step 1 失敗。処理を中止します

@@ -153,3 +153,31 @@ IndexError: list index out of range
 2026-03-21 11:43:27,483 INFO ─── Step 3: GitHub保存 ───
 2026-03-21 11:43:29,254 INFO   ✅ GitHub完了
 2026-03-21 11:43:29,254 INFO 🏁 すべて完了
+2026-03-21 11:44:34,327 INFO 🚀 更新プロセス開始
+2026-03-21 11:44:34,477 INFO   ✅ Step 1: HTML完了
+2026-03-21 11:44:34,478 INFO ─── Step 2: Supabase自動同期 ───
+2026-03-21 11:44:34,478 INFO   DBテーブル 'sold_items' から読み込み中...
+2026-03-21 11:44:34,499 ERROR   ❌ 同期エラー: 'latin-1' codec can't encode characters in position 0-3: ordinal not in range(256)
+2026-03-21 11:44:36,257 INFO   ✅ Step 3: GitHub完了
+2026-03-21 11:44:36,257 INFO 🏁 すべての工程が終了しました
+2026-03-21 11:48:51,326 [INFO] === Start Auto Process ===
+2026-03-21 11:48:51,327 [INFO] --- Step 1: Generating HTML ---
+2026-03-21 11:48:51,351 [ERROR] Command failed: "C:\Users\xxxha\AppData\Local\Programs\Python\Python315\python.exe" "D:\mercari_github\scripts\build_mercari.py" --db "D:\mercari\data\mercari_full.db" --out "D:\mercari_github\html\index.html" --limit 50
+Error: �t�@�C�����A�f�B���N�g�����A�܂��̓{�����[�� ���x���̍\�����Ԉ���Ă��܂��B
+
+2026-03-21 11:48:51,351 [ERROR] Step 1 failed. Aborting subsequent steps.
+2026-03-21 11:48:51,351 [INFO] === Process Completed ===
+2026-03-21 11:52:48,812 [INFO] === Start Auto Process ===
+2026-03-21 11:52:48,812 [INFO] --- Step 1: Generating HTML ---
+2026-03-21 11:52:48,835 [ERROR] Command failed: "C:\Users\xxxha\AppData\Local\Programs\Python\Python315\python.exe" "D:\mercari_github\scripts\build_mercari.py" --db "D:\mercari\data\mercari_full.db" --out "D:\mercari_github\html\index.html" --limit 50
+Error: �t�@�C�����A�f�B���N�g�����A�܂��̓{�����[�� ���x���̍\�����Ԉ���Ă��܂��B
+
+2026-03-21 11:52:48,836 [ERROR] Step 1 failed. Aborting subsequent steps.
+2026-03-21 11:52:48,836 [INFO] === Process Completed ===
+2026-03-21 11:54:57,100 [INFO] === Start Auto Process ===
+2026-03-21 11:54:57,100 [INFO] --- Step 1: Generating HTML ---
+2026-03-21 11:54:57,124 [ERROR] Command failed: "C:\Users\xxxha\AppData\Local\Programs\Python\Python315\python.exe" "D:\mercari_github\scripts\build_mercari.py" --db "D:\mercari\data\mercari_full.db" --out "D:\mercari_github\html\index.html" --limit 50
+Error: �t�@�C�����A�f�B���N�g�����A�܂��̓{�����[�� ���x���̍\�����Ԉ���Ă��܂��B
+
+2026-03-21 11:54:57,124 [ERROR] Step 1 failed. Aborting subsequent steps.
+2026-03-21 11:54:57,125 [INFO] === Process Completed ===

@@ -189,3 +189,9 @@ Error: ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½Ü‚ï¿
 2026-03-21 11:56:39,641 [INFO] --- Step 3: Git Operations ---
 2026-03-21 11:56:41,409 [INFO] Step 3 (Git): Push Success
 2026-03-21 11:56:41,409 [INFO] === Process Completed ===
+2026-03-21 11:57:14,958 [INFO] === Start Auto Process ===
+2026-03-21 11:57:14,959 [INFO] Step 1: HTML build starting...
+2026-03-21 11:57:15,384 [INFO] Step 1 (HTML): OK
+2026-03-21 11:57:15,384 [INFO] --- Step 2: Syncing to Supabase (Limit: 50) ---
+2026-03-21 11:57:15,414 [ERROR] Sync Error: 'latin-1' codec can't encode characters in position 0-3: ordinal not in range(256)
+2026-03-21 11:57:15,414 [INFO] --- Step 3: Git Operations ---

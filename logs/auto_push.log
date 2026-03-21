@@ -95,3 +95,32 @@ IndexError: list index out of range
 2026-03-20 10:34:48,915 ERROR build_mercari.py が見つかりません: D:\mercari_github\scripts\build_mercari.py
 2026-03-20 10:34:48,916 ERROR build_mercari.py を D:\mercari_github\scripts に配置してください
 2026-03-20 10:34:48,916 ERROR ❌ Step 1 失敗。処理を中止します
+2026-03-20 10:35:35,445 INFO =======================================================
+2026-03-20 10:35:35,445 INFO   メルカリ仕入判断AI 自動更新開始
+2026-03-20 10:35:35,446 INFO   2026-03-20 10:35:35
+2026-03-20 10:35:35,446 INFO =======================================================
+2026-03-20 10:35:35,446 INFO ─── Step 1: HTML生成 ───────────────────────────
+2026-03-20 10:35:35,446 INFO DB   : D:\mercari\data\mercari_full.db
+2026-03-20 10:35:35,447 INFO 出力 : D:\mercari_github\html\index.html
+2026-03-20 10:35:55,333 INFO   [BUILD] DB     : D:\mercari\data\mercari_full.db
+2026-03-20 10:35:55,333 INFO   [BUILD] 出力   : D:\mercari_github\html\index.html
+2026-03-20 10:35:55,334 INFO   [BUILD] テンプレ: D:\mercari_github\html\index_v20.html
+2026-03-20 10:35:55,334 INFO   [INFO] テーブル=sold_items  カラム=['id', 'item_id', 'title', 'price', 'link', 'lv1', 'lv2', 'lv3', 'lv4', 'lv5', 'lv6', 'brand', 'size', 'condition', 'created_dt']
+2026-03-20 10:35:55,334 INFO   [INFO] カラムマッピング: {'price': 'price', 'brand': 'brand', 'cat1': 'lv1', 'cat2': 'lv2', 'cat3': 'lv3', 'cat4': 'lv4', 'cat5': 'lv5', 'created': 'created_dt', 'updated': 'updated_dt', 'title': 'title'}
+2026-03-20 10:35:55,334 INFO   [INFO] 期間=1399898215~1773373707  総件数=524,779
+2026-03-20 10:35:55,335 INFO   [BUILD] 分析開始...
+2026-03-20 10:35:55,335 INFO   [BUILD] テンプレートHTML生成中...
+2026-03-20 10:35:55,335 INFO   [BUILD] テンプレート読み込み: D:\mercari_github\html\index_v20.html
+2026-03-20 10:35:55,335 INFO   
+2026-03-20 10:35:55,336 INFO   [DONE] 出力完了: D:\mercari_github\html\index.html
+2026-03-20 10:35:55,336 INFO   [DONE] ファイルサイズ: 0.61 MB
+2026-03-20 10:35:55,336 INFO   [DONE] DB期間: 1399898215 〜 1773373707  総件数: 524,779
+2026-03-20 10:35:55,337 INFO   生成完了: index.html  (627.4 KB)
+2026-03-20 10:35:55,337 INFO ─── Step 2: Git コミット & プッシュ ────────────
+2026-03-20 10:35:55,846 INFO   コミット完了: 自動更新: 2026-03-20 10:35
+2026-03-20 10:35:55,846 INFO   GitHubへプッシュ中...
+2026-03-20 10:35:57,572 INFO   ✅ GitHubへのプッシュ完了
+2026-03-20 10:35:57,573 INFO =======================================================
+2026-03-20 10:35:57,573 INFO   ✅ 全ステップ完了
+2026-03-20 10:35:57,573 INFO   2026-03-20 10:35:57
+2026-03-20 10:35:57,573 INFO =======================================================

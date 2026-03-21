@@ -124,3 +124,10 @@ IndexError: list index out of range
 2026-03-20 10:35:57,573 INFO   ✅ 全ステップ完了
 2026-03-20 10:35:57,573 INFO   2026-03-20 10:35:57
 2026-03-20 10:35:57,573 INFO =======================================================
+2026-03-21 11:23:50,017 INFO 開始: 制限 50件
+2026-03-21 11:23:50,017 INFO ─── Step 1: HTML生成 ───────────────────────────
+2026-03-21 11:23:50,018 INFO 実行コマンド: "C:\Users\xxxha\AppData\Local\Programs\Python\Python315\python.exe" "D:\mercari_github\scripts\build_mercari.py" --db "D:\mercari\data\mercari_full.db" --out "D:\mercari_github\html\index.html" --limit 50
+2026-03-21 11:23:50,166 INFO   ✅ HTML生成完了
+2026-03-21 11:23:50,166 INFO ─── Step 2: Git コミット & プッシュ ────────────
+2026-03-21 11:23:55,313 INFO   GitHubへプッシュ中...
+2026-03-21 11:24:15,440 INFO   ✅ GitHubへのプッシュ完了

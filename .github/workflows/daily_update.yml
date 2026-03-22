@@ -1,12 +1,15 @@
-name: Daily Mercari Update
+name: Upload to Supabase Storage
 
 on:
-  schedule:
-    - cron: "0 20 * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - "output/**"
   workflow_dispatch:
 
 jobs:
-  update:
+  upload:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,13 +20,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests python-dotenv supabase
-
-      - name: Run full auto update
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-        run: python FULL_AUTO_LOCAL_Vol2.py
+        run: pip install requests python-dotenv
 
       - name: Upload to Supabase Storage
         env:

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>メルカリ仕入判断AI 完全版</title>
+
+<style>
+body{font-family:sans-serif;background:#f5f7fb;margin:0;padding:20px;}
+h1{font-size:20px;}
+select,input,button{padding:6px;margin:4px;}
+.card{background:#fff;padding:10px;margin:5px;border-radius:6px;border:1px solid #ddd;}
+</style>
+</head>
+
+<body>
+
+<h1>📦 メルカリ仕入判断AI（完全版）</h1>
+
+<!-- フィルタ -->
+<div>
+<select id="sl1"></select>
+<select id="sl2"></select>
+<select id="sl3"></select>
+<select id="sl4"></select>
+<select id="sl5"></select>
+<select id="sl6"></select>
+
+<input type="text" id="brand" placeholder="ブランド検索">
+
+<button onclick="applyFilter()">検索</button>
+</div>
+
+<!-- 結果 -->
+<div id="result"></div>
+
+<script>
+
+// =====================
+// 🔥 データ（サンプル）
+// =====================
+const RAW = [
+ {ブランド:"ANDMARY",L1:"ファッション",L2:"レディース",L3:"セットアップ",L4:"スカート",価格:14000,利益:8000},
+ {ブランド:"NIKE",L1:"ファッション",L2:"メンズ",L3:"セットアップ",L4:"パンツ",価格:6000,利益:2500},
+ {ブランド:"adidas",L1:"ファッション",L2:"ユニセックス",L3:"セットアップ",L4:"パンツ",価格:7000,利益:3000}
+];
+
+// =====================
+// 🔥 カテゴリ自動生成
+// =====================
+function populate(){
+ const levels=["L1","L2","L3","L4","L5","L6"];
+
+ levels.forEach((lv,i)=>{
+   const el=document.getElementById("sl"+(i+1));
+   if(!el) return;
+
+   let filtered=RAW;
+
+   for(let j=0;j<i;j++){
+     const val=document.getElementById("sl"+(j+1)).value;
+     if(val) filtered=filtered.filter(d=>d["L"+(j+1)]===val);
+   }
+
+   const vals=[...new Set(filtered.map(d=>d[lv]).filter(v=>v))];
+
+   el.innerHTML=`<option value="">全${lv}</option>`+
+     vals.map(v=>`<option value="${v}">${v}</option>`).join("");
+ });
+}
+
+// =====================
+// 🔥 フィルタ
+// =====================
+function applyFilter(){
+
+ const vals=[
+   sl1.value,sl2.value,sl3.value,
+   sl4.value,sl5.value,sl6.value
+ ];
+
+ const brand=document.getElementById("brand").value;
+
+ let data=RAW.filter(d=>{
+
+   // 🔥 完全カテゴリ対応
+   if(
+     d.L2!=="レディース" &&
+     d.L2!=="メンズ" &&
+     d.L2!=="ユニセックス" &&
+     d.L2!=="男女兼用"
+   ) return false;
+
+   for(let i=0;i<6;i++){
+     if(vals[i] && d["L"+(i+1)]!==vals[i]) return false;
+   }
+
+   if(brand && !d.ブランド.includes(brand)) return false;
+
+   return true;
+ });
+
+ render(data);
+}
+
+// =====================
+// 🔥 描画
+// =====================
+function render(data){
+ const el=document.getElementById("result");
+
+ if(data.length===0){
+   el.innerHTML="<p>データなし</p>";
+   return;
+ }
+
+ el.innerHTML=data.map(d=>`
+  <div class="card">
+    <b>${d.ブランド}</b><br>
+    ${d.L1} > ${d.L2} > ${d.L3} > ${d.L4}<br>
+    💰価格: ¥${d.価格}<br>
+    📈利益: ¥${d.利益}
+  </div>
+ `).join("");
+}
+
+// =====================
+// 🔥 初期化
+// =====================
+document.addEventListener("DOMContentLoaded",()=>{
+ populate();
+
+ ["sl1","sl2","sl3","sl4","sl5"].forEach(id=>{
+   document.getElementById(id).addEventListener("change",populate);
+ });
+});
+
+</script>
+
+</body>
+</html>

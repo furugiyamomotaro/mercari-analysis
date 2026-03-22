@@ -1,4 +1,12 @@
-<!DOCTYPE html>
+function loadCategory(l2,l3){
+  var SB="https://tikqwmpclunseegqksnk.supabase.co/storage/v1/object/public/mercari-data/";
+  var nm={};
+  nm["メンズ"]={"トップス":"mercari_mens_tops_data.json","ジャケット・ アウター":"mercari_mens_jacket_data.json","パンツ":"mercari_mens_pants_data.json","靴":"mercari_mens_shoes_data.json","スーツ":"mercari_mens_suits_data.json","バッグ":"mercari_mens_bags_data.json","帽子":"mercari_mens_hats_data.json","アクセサリー":"mercari_mens_accessories_data.json","小物":"mercari_mens_accessories_small_data.json","時計":"mercari_mens_watches_data.json","レッグウェア":"mercari_mens_legwear_data.json"};
+  nm["レディース"]={"トップス":"mercari_ladies_tops_data.json","ジャケット・アウター":"mercari_ladies_jacket_data.json","パンツ":"mercari_ladies_pants_data.json","スカート":"mercari_ladies_skirts_data.json","靴":"mercari_ladies_shoes_data.json","スーツ・フォーマル・ドレス":"mercari_ladies_suits_data.json","ワンピース":"mercari_ladies_dress_data.json","バッグ":"mercari_ladies_bags_data.json","アクセサリー":"mercari_ladies_accessories_data.json","小物":"mercari_ladies_accessories_small_data.json","帽子":"mercari_ladies_hats_data.json","時計":"mercari_ladies_watches_data.json","レッグウェア":"mercari_ladies_legwear_data.json","セットアップ":"mercari_ladies_setup_data.json","サロペット・オーバー・オール・オールインワン":"mercari_ladies_salopette_data.json"};
+  var fn=nm[l2]&&nm[l2][l3];
+  if(!fn){document.getElementById("sbar").innerHTML="カテゴリーが見つかりません";return;}
+  document.getElementById("sbar").innerHTML="⟳ データ読み込み中...";
+  fetch(SB+fn)<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">

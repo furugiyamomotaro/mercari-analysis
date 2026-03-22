@@ -91,27 +91,27 @@ tr:hover td{background:#f5f8ff;}
 </head>
 <body>
 <header>
-  <div><h1>📦 メルカリ仕入判断AI <span>30分析</span><span class="hbadge">メンズ &gt; トップス</span></h1></div>
+  <div><h1>📦 メルカリ仕入判断AI <span>30分析</span><span class="hbadge" id="hd_badge">メンズ &gt; トップス</span></h1></div>
   <div class="hstats">
-    <div class="hs"><div class="n">19,430</div><div class="l">分析対象件数</div></div>
+    <div class="hs"><div class="n" id="hd_count">19,430</div><div class="l">分析対象件数</div></div>
     <div class="hs-sep"></div>
     <div class="hs"><div class="n">¥7,621</div><div class="l">平均単価</div></div>
     <div class="hs-sep"></div>
     <div class="hs"><div class="n">¥4,354</div><div class="l">推定利益/件</div></div>
     <div class="hs-sep"></div>
-    <div class="hs"><div class="n">44.6%</div><div class="l">平均利益率</div></div>
+    <div class="hs"><div class="n" id="hd_rate">44.6%</div><div class="l">平均利益率</div></div>
     <div class="hs-sep"></div>
-    <div class="hs"><div class="n">28.1%</div><div class="l">即売れ率</div></div>
+    <div class="hs"><div class="n" id="hd_quick">28.1%</div><div class="l">即売れ率</div></div>
     <div class="hs-sep"></div>
-    <div class="hs"><div class="n">30</div><div class="l">分析数</div></div>
+    <div class="hs"><div class="n" id="hd_num">30</div><div class="l">分析数</div></div>
   </div>
 </header>
 <div class="infobar">
   🗄️ <b>DB収録期間:</b><span id="ib_period">2015年12月03日〜2026年03月13日</span>&nbsp;｜&nbsp;
-  <b>総件数:</b>24,816件&nbsp;｜&nbsp;
+  <b>総件数:</b><span id="ib_total">24,816件</span>&nbsp;｜&nbsp;
   <b>推定総利益:</b>¥84,598,636&nbsp;｜&nbsp;
-  <b>3日以内即売れ:</b>5,464件&nbsp;｜&nbsp;
-  <b>カテゴリ:</b>メンズ
+  <b>3日以内即売れ:</b><span id="ib_quick">5,464件</span>&nbsp;｜&nbsp;
+  <b>カテゴリ:</b><span id="ib_cat">メンズ</span>
 </div>
 <div class="fbar">
   <div class="frow">
@@ -472,7 +472,28 @@ function loadCategory(l2,l3){
     var today=new Date();
     var ymd=today.getFullYear()+"-"+String(today.getMonth()+1).padStart(2,"0")+"-"+String(today.getDate()).padStart(2,"0");
     document.getElementById("dfrom").value=DB_START;document.getElementById("dto").value=ymd;
-    CUR_FROM=DB_START;CUR_TO=ymd;refreshUI();
+    CUR_FROM=DB_START;CUR_TO=ymd;
+    var _c=data.raw_data||[];
+    var _tot=_c.length;
+    var _avg=_tot?Math.round(_c.reduce(function(s,r){return s+(parseFloat(r["平均単価"])||0);},0)/_tot):0;
+    var _prf=_tot?Math.round(_c.reduce(function(s,r){return s+(parseFloat(r["推定利益/件"])||0);},0)/_tot):0;
+    var _rate=_tot?(_c.reduce(function(s,r){return s+(parseFloat(r["利益率"])||0);},0)/_tot).toFixed(1):0;
+    var _qk=_tot?(_c.reduce(function(s,r){return s+(parseFloat(r["即売れ率"])||0);},0)/_tot).toFixed(1):0;
+    var _tprf=Math.round(_c.reduce(function(s,r){return s+(parseFloat(r["推定利益/件"])||0);},0));
+    var _q3=_c.filter(function(r){return(parseFloat(r["平均売却秒数"])||99999)<259200;}).length;
+    var _el=function(id){return document.getElementById(id);};
+    if(_el("hd_badge"))_el("hd_badge").textContent=l2+" > "+l3;
+    if(_el("hd_count"))_el("hd_count").textContent=_tot.toLocaleString();
+    if(_el("hd_avg"))_el("hd_avg").textContent="￥"+_avg.toLocaleString("ja-JP");
+    if(_el("hd_profit"))_el("hd_profit").textContent="￥"+_prf.toLocaleString("ja-JP");
+    if(_el("hd_rate"))_el("hd_rate").textContent=_rate+"%";
+    if(_el("hd_quick"))_el("hd_quick").textContent=_qk+"%";
+    if(_el("hd_num"))_el("hd_num").textContent=data.tree?Object.keys(data.tree).length:"-";
+    if(_el("ib_total"))_el("ib_total").textContent=_tot.toLocaleString()+"件";
+    if(_el("ib_profit"))_el("ib_profit").textContent="￥"+_tprf.toLocaleString("ja-JP");
+    if(_el("ib_quick"))_el("ib_quick").textContent=_q3.toLocaleString()+"件";
+    if(_el("ib_cat"))_el("ib_cat").textContent=l2;
+    refreshUI();
   }).catch(function(){document.getElementById("sbar").innerHTML="❌ データ読み込み失敗";});
 }
 document.addEventListener("DOMContentLoaded",function(){

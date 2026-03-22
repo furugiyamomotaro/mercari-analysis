@@ -91,7 +91,7 @@ tr:hover td{background:#f5f8ff;}
 </head>
 <body>
 <header>
-  <div><h1>📦 メルカリ仕入判断AI <span>30分析</span><span class="hbadge" id="hd_badge">メンズ &gt; トップス</span></h1></div>
+  <div><h1>📦 メルカリ仕入判断AI <span>30分析</span><span class="hbadge" id="hd_badge"></span></h1></div>
   <div class="hstats">
     <div class="hs"><div class="n" id="hd_count">19,430</div><div class="l">分析対象件数</div></div>
     <div class="hs-sep"></div>
@@ -264,6 +264,14 @@ function initSel(){
   });
 }
 function applyFilter(){
+  var _el2=function(id){return document.getElementById(id);};
+  var _l2=document.getElementById("sl2").value;
+  var _l3=document.getElementById("sl3").value;
+  var _l4=document.getElementById("sl4").value;
+  var _l5=document.getElementById("sl5").value;
+  var _l6=document.getElementById("sl6").value;
+  var _bp=[_l2,_l3,_l4,_l5,_l6].filter(function(v){return v&&v!=="";});
+  if(_el2("hd_badge"))_el2("hd_badge").textContent=_bp.join(" > ");
   CUR_FROM=document.getElementById("dfrom").value;CUR_TO=document.getElementById("dto").value;
   CUR_L1=document.getElementById("sl1").value;CUR_L2=document.getElementById("sl2").value;
   CUR_L3=document.getElementById("sl3").value;CUR_L4=document.getElementById("sl4").value;
@@ -482,7 +490,8 @@ function loadCategory(l2,l3){
     var _tprf=Math.round(_c.reduce(function(s,r){return s+(parseFloat(r["推定利益/件"])||0);},0));
     var _q3=_c.filter(function(r){return(parseFloat(r["平均売却秒数"])||99999)<259200;}).length;
     var _el=function(id){return document.getElementById(id);};
-    if(_el("hd_badge"))_el("hd_badge").textContent=l2+" > "+l3;
+    var _parts=[l2,l3,CUR_L4,CUR_L5,CUR_L6].filter(function(v){return v&&v!=="";});
+    if(_el("hd_badge"))_el("hd_badge").textContent=_parts.join(" > ");
     if(_el("hd_count"))_el("hd_count").textContent=_tot.toLocaleString();
     if(_el("hd_avg"))_el("hd_avg").textContent="￥"+_avg.toLocaleString("ja-JP");
     if(_el("hd_profit"))_el("hd_profit").textContent="￥"+_prf.toLocaleString("ja-JP");

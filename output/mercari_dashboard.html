@@ -247,9 +247,7 @@ function initSel(){
     var l1=document.getElementById("sl1").value,l2=document.getElementById("sl2").value,l3=this.value;
     setSel("sl4",[],true);setSel("sl5",[],true);setSel("sl6",[],true);
     if(!l3)return;
-    var node=CAT[l1]&&CAT[l1][l2]&&CAT[l1][l2][l3];
-    var l4keys=node?Object.keys(node).sort():[];
-    setSel("sl4",l4keys,l4keys.length===0);
+    loadCategory(l2,l3);
   });
   document.getElementById("sl4").addEventListener("change",function(){
     var l1=Object.keys(CAT)[0]||"",l2=CUR_L2||document.getElementById("sl2").value;
